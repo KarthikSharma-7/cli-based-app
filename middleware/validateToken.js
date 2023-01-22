@@ -13,7 +13,7 @@ const validateToken = async (req, res, next) => {
       return res.status(400).json({ Error: "Require Login" });
     }
     const { id } = payload;
-    const userInfo = await userModel.findOne({ id });
+    const userInfo = await userModel.findOne({ _id: id });
     userInfo.password = undefined;
     req.user = userInfo;
     next();

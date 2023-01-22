@@ -32,8 +32,8 @@ const deleteFromSTore = async () => {};
 
 const getAllPairs = async (req, res) => {
   const userId = req.user._id;
-  const allPairs = await storeModel.find({ userId });
-  res.status(200).json({ Data: allPairs });
+  const allPairs = await storeModel.find({ createdBy: userId });
+  return res.status(200).json({ Data: allPairs });
 };
 
 module.exports = {
