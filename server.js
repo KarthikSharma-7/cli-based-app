@@ -8,6 +8,7 @@ const port = process.env.PORT;
 const mongoConnection = require("./config/db");
 
 const userRouter = require("./routes/userRoutes");
+const storeRouter=require("./routes/storeRoutes");
 
 app.use(express.json());
 app.use(cors());
@@ -15,6 +16,7 @@ app.use(cors());
 mongoConnection();
 
 app.use("/api/user", userRouter);
+app.use("/api/store",storeRouter);
 
 app.listen(port, () => {
   console.log(`Server running on ${port}`);
