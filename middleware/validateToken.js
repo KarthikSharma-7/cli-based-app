@@ -8,12 +8,12 @@ const validateToken = async (req, res, next) => {
     return res.status(400).json({ Error: "Require Login" });
   }
   const token = authorization.replace("Bearer ", "");
-  await jwt.verify(authorization, process.env.JWT_KEY, async (err, payload) => {
+  await jwt.verify(token, process.env.JWT_KEY, async (err, payload) => {
     if (err) {
       return res.status(400).json({ Error: "Require Login" });
     }
-    const { _id } = payload;
-    const userInfo = await userModel.findOne({ _id });
+    const { id } = payload;
+    const userInfo = await userModel.findOne({ id });
     userInfo.password = undefined;
     req.user = userInfo;
     next();
