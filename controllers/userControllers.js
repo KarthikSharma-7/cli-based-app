@@ -63,7 +63,7 @@ const updateUser = async (req, res) => {
         new: true,
       }
     );
-    if (updateUser) {
+    if (updatedUser) {
       res.status(200).json({
         id: updatedUser._id,
         name: updatedUser.name,

@@ -3,8 +3,13 @@ const storeModel = require("../models/storeModel");
 
 const addToStore = async (req, res) => {
   const { key, value } = req.body;
+  const userId=req.user._id
   if (!key || !value) {
     return res.status(400).json({ Error: "Empty fields cannot be stored" });
+  }
+  const keyExists=await storeModel.findOne({key,createdBy:userId})
+  if(keyExists){
+    return res.status(400).json({Error: "Key Already Exists"})
   }
   const newRecord = await storeModel.create({
     key,
@@ -24,7 +29,34 @@ const addToStore = async (req, res) => {
   }
 };
 
-const updateToStore = async () => {};
+const updateToStore = async (req,res) => {
+  const userId=req.user._id;
+  const parameter=req.params.key;
+  const body=req.body;
+  if ( !body) {
+    return res.status(400).json({ Error: "Not Found" });
+  }
+  try {
+    const updatedStore = await storeModel.findOneAndUpdate(
+      { createdBy:userId,key:parameter},
+      body,
+      {
+        new: true,
+      }
+    );
+    if (updatedStore) {
+      res.status(200).json({
+        id: updatedStore._id,
+        key: updatedStore.key,
+        value: updatedStore.value,
+      });
+    } else {
+      res.status(400).json({ Error: "Failed to Update" });
+    }
+  } catch (error) {
+    return res.status(400).json({ Error: error });
+  }
+};
 
 const getFromStore = async (req, res) => {
   const userId = req.user._id;
@@ -34,7 +66,7 @@ const getFromStore = async (req, res) => {
     if (pair) {
       return res.status(200).json({ Data: pair });
     } else {
-      return res.status(404).json({ Error: "Not Found" });
+      return res.status(400).json({ Error: "Not Found" });
     }
   } catch (err) {
     res.status(400).json({ Error: err });
