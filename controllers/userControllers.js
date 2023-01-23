@@ -55,21 +55,25 @@ const updateUser = async (req, res) => {
   if (!body) {
     return res.status(400).json({ Error: "Empty Fields cannot be updated" });
   }
-  const updatedUser = await userModel.findOneAndUpdate(
-    { _id: req.user._id },
-    body,
-    {
-      new: true,
+  try {
+    const updatedUser = await userModel.findOneAndUpdate(
+      { _id: req.user._id },
+      body,
+      {
+        new: true,
+      }
+    );
+    if (updateUser) {
+      res.status(200).json({
+        id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+      });
+    } else {
+      res.status(400).json({ Error: "Failed to upload" });
     }
-  );
-  if (updateUser) {
-    res.status(200).json({
-      id: updatedUser._id,
-      name: updatedUser.name,
-      email: updatedUser.email,
-    });
-  } else {
-    res.status(400).json({ Error: "Failed to upload" });
+  } catch (error) {
+    return res.status(400).json({ Error: error });
   }
 };
 

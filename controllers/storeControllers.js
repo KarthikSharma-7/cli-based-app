@@ -31,7 +31,11 @@ const getFromStore = async (req, res) => {
   const key = req.params.key;
   try {
     const pair = await storeModel.find({ createdBy: userId, key });
-    return res.status(200).json({ Data: pair });
+    if (pair) {
+      return res.status(200).json({ Data: pair });
+    } else {
+      return res.status(404).json({ Error: "Not Found" });
+    }
   } catch (err) {
     res.status(400).json({ Error: err });
   }
@@ -43,11 +47,14 @@ const getAllPairs = async (req, res) => {
   const userId = req.user._id;
   try {
     const allPairs = await storeModel.find({ createdBy: userId });
-  return res.status(200).json({ Data: allPairs });
+    if (allPairs) {
+      return res.status(200).json({ Data: allPairs });
+    } else {
+      return res.status(400).json({ Error: "Not Found" });
+    }
   } catch (error) {
     res.status(400).json({ Error: err });
   }
-  
 };
 
 module.exports = {
