@@ -5,6 +5,10 @@ const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) {
     res.status(400).json({ Error: "All Fields Required" });
+  } else if (/[^a-zA-Z]/.test(name)) {
+    return res.status(400).json({ Error: "Username must be in alphabet" });
+  } else if (!/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/.test(email)) {
+    return res.status(400).json({ Error: "Enter a valid email" });
   }
   const userExists = await userModel.findOne({ email });
   if (userExists) {
@@ -46,4 +50,27 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+const updateUser = async (req, res) => {
+  const body = req.body;
+  if (!body) {
+    return res.status(400).json({ Error: "Empty Fields cannot be updated" });
+  }
+  const updatedUser = await userModel.findOneAndUpdate(
+    { _id: req.user._id },
+    body,
+    {
+      new: true,
+    }
+  );
+  if (updateUser) {
+    res.status(200).json({
+      id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+    });
+  } else {
+    res.status(400).json({ Error: "Failed to upload" });
+  }
+};
+
+module.exports = { registerUser, loginUser, updateUser };
