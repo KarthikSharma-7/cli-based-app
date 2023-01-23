@@ -26,14 +26,28 @@ const addToStore = async (req, res) => {
 
 const updateToStore = async () => {};
 
-const getFromStore = async () => {};
+const getFromStore = async (req, res) => {
+  const userId = req.user._id;
+  const key = req.params.key;
+  try {
+    const pair = await storeModel.find({ createdBy: userId, key });
+    return res.status(200).json({ Data: pair });
+  } catch (err) {
+    res.status(400).json({ Error: err });
+  }
+};
 
 const deleteFromSTore = async () => {};
 
 const getAllPairs = async (req, res) => {
   const userId = req.user._id;
-  const allPairs = await storeModel.find({ createdBy: userId });
+  try {
+    const allPairs = await storeModel.find({ createdBy: userId });
   return res.status(200).json({ Data: allPairs });
+  } catch (error) {
+    res.status(400).json({ Error: err });
+  }
+  
 };
 
 module.exports = {
