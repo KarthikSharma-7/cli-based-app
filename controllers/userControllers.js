@@ -54,6 +54,10 @@ const updateUser = async (req, res) => {
   const body = req.body;
   if (!body) {
     return res.status(400).json({ Error: "Empty Fields cannot be updated" });
+  } else if (body.password !== null) {
+    return res
+      .status(400)
+      .json({ Error: "Passwords cannot be updated, they can only be reset" });
   }
   try {
     const updatedUser = await userModel.findOneAndUpdate(
