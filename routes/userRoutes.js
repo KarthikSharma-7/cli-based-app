@@ -3,7 +3,6 @@ const {
   registerUser,
   loginUser,
   updateUser,
-  getAllUsers,
   resetPassword,
 } = require("../controllers/userControllers");
 const validateToken = require("../middleware/validateToken");
