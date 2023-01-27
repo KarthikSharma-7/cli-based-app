@@ -85,18 +85,6 @@ const updateUser = async (req, res) => {
   }
 };
 
-const getAllUsers = async (req, res) => {
-  const users = await userModel.find();
-  if (users) {
-    users.forEach((user) => {
-      user.password = undefined;
-    });
-    return res.status(200).json({ Data: users });
-  } else {
-    return res.status(400).json({ Error: "Request cannot be processed" });
-  }
-};
-
 const resetPassword = async (req, res) => {
   const userId = req.user._id;
   const { oldpassword, newpassword } = req.body;
@@ -128,6 +116,5 @@ module.exports = {
   registerUser,
   loginUser,
   updateUser,
-  getAllUsers,
   resetPassword,
 };
