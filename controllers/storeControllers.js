@@ -49,6 +49,7 @@ const updateToStore = async (req, res) => {
         id: updatedStore._id,
         key: updatedStore.key,
         value: updatedStore.value,
+        name: req.user.name,
       });
     } else {
       res.status(400).json({ Error: "Failed to Update" });
@@ -64,7 +65,7 @@ const getFromStore = async (req, res) => {
   try {
     const pair = await storeModel.find({ createdBy: userId, key });
     if (pair) {
-      return res.status(200).json({ Data: pair });
+      return res.status(200).json({ Data: pair, name: req.user.name });
     } else {
       return res.status(400).json({ Error: "Not Found" });
     }
@@ -81,16 +82,15 @@ const deleteFromSTore = async (req, res) => {
       createdBy: userId,
       key: parameter,
     });
-    if(deletedStore){
+    if (deletedStore) {
       return res.status(200).json({
-        Data:"Successfully deleted"
+        Data: "Successfully deleted",
       });
-    }
-    else{
-      return res.status(400).json({Error:"Failed to Delete"})
+    } else {
+      return res.status(400).json({ Error: "Failed to Delete" });
     }
   } catch (err) {
-    res.status(400).json({Error:err})
+    res.status(400).json({ Error: err });
   }
 };
 
@@ -99,7 +99,7 @@ const getAllPairs = async (req, res) => {
   try {
     const allPairs = await storeModel.find({ createdBy: userId });
     if (allPairs) {
-      return res.status(200).json({ Data: allPairs });
+      return res.status(200).json({ Data: allPairs, Name: req.user.name });
     } else {
       return res.status(400).json({ Error: "Not Found" });
     }

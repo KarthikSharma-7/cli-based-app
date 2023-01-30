@@ -52,16 +52,24 @@ const loginUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const body = req.body;
-  if (
-    body?.name === undefined &&
-    body?.email === undefined &&
-    body?.password === undefined
-  ) {
-    return res.status(400).json({ Error: "Empty Fields cannot be updated" });
-  } else if (body?.password !== undefined) {
-    return res
-      .status(400)
-      .json({ Error: "Passwords cannot be updated, they can only be reset" });
+  body.name = body.name ? body.name : "";
+  body.email = body.email ? body.email : "";
+  if (body.name === "" && body.email === "") {
+    return res.status(400).json({ Error: "Empty Fields Cannot Be Updated" });
+  } else if (body.name !== "") {
+    if (/[^a-zA-Z]/.test(body.name)) {
+      return res.status(400).json({ Error: "Username must be in alphabet" });
+    }
+  } else if (body.email !== "") {
+    if (!/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/.test(body.email)) {
+      return res.status(400).json({ Error: "Enter a valid email" });
+    }
+  }
+  if (body.name === "") {
+    delete body.name;
+  }
+  if (body.email === "") {
+    delete body.email;
   }
   try {
     const updatedUser = await userModel.findOneAndUpdate(
