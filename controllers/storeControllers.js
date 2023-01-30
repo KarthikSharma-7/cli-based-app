@@ -33,8 +33,16 @@ const updateToStore = async (req, res) => {
   const userId = req.user._id;
   const parameter = req.params.key;
   const body = req.body;
-  if (!body) {
-    return res.status(400).json({ Error: "Not Found" });
+  body.key = body.key ? body.key : "";
+  body.value = body.value ? body.value : "";
+  if (body.key === "" && body.value === "") {
+    return res.status(400).json({ Error: "Empty Fields Cannot Be Updated" });
+  }
+  if (body.key === "") {
+    delete body.key;
+  }
+  if (body.value === "") {
+    delete body.value;
   }
   try {
     const updatedStore = await storeModel.findOneAndUpdate(
